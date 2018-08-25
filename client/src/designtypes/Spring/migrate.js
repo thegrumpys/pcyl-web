@@ -19,7 +19,27 @@ export function migrate(design) {
          console.log('Convert from 1 to 2');
          design.subproblems = [];
          design.subproblems.push({
-                 name: 'test'
+                 name: 'test',
+                 number: 0,
+                 mask: 1
+         });
+         design.constants.forEach((constant) => {
+             constant.subproblems = 0xffffffff; // default is member of all subproblems
+             if (constant.ioclass !== undefined) {
+                 delete constant.ioclass; // Toss old ioclass if it exists
+             }
+         });
+         design.design_parameters.forEach((design_parameter) => {
+             design_parameter.subproblems = 0xffffffff; // default is member of all subproblems
+             if (design_parameter.ioclass !== undefined) {
+                 delete design_parameter.ioclass; // Toss old ioclass if it exists
+             }
+         });
+         design.state_variables.forEach((state_variable) => {
+             state_variable.subproblems = 0xffffffff; // default is member of all subproblems
+             if (state_variable.ioclass !== undefined) {
+                 delete state_variable.ioclass; // Toss old ioclass if it exists
+             }
          });
          migrated_design.version = "2"; // last thing... set the migrated model version
         break;

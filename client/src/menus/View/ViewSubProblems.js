@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, Input, Label } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from 'reactstrap';
 import { connect } from 'react-redux';
+import { displayError } from '../../components/ErrorModal';
 
 class SubProblems extends React.Component {
     constructor(props) {
@@ -23,7 +24,10 @@ class SubProblems extends React.Component {
             modal: false,
             createEditModal: false,
             deleteModal: false,
-            subproblems: this.props.subproblems
+            subproblems: this.props.subproblems,
+            constants: this.props.subproblems,
+            design_parameters: this.props.design_parameters,
+            state_variables: this.props.state_variables
         };
     }
 
@@ -36,12 +40,21 @@ class SubProblems extends React.Component {
         // Pop-up subproblem modal, and copy model subproblems to local subproblems
         this.setState({
             modal: !this.state.modal,
-            subproblems: this.props.subproblems
+            subproblems: this.props.subproblems,
+            constants: this.props.subproblems,
+            design_parameters: this.props.design_parameters,
+            state_variables: this.props.state_variables
         });
     }
 
     onCreate() {
         console.log('In SubProblems.onCreate');
+        // Find available subproblem number and create corresponding mask. If none then display error
+        if (this.state.subproblems.length === 32) {
+            displayError('No more sub-problems are available');
+            return;
+        }
+        this.state.subproblems.find((entry) => {})
         // Pop-up Create/Edit modal, set type to Create, set name to blank, and set all variables to inactive
         this.setState({
             createEditModal: !this.state.createEditModal,
@@ -177,6 +190,7 @@ class SubProblems extends React.Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; View : Sub-Problems </ModalHeader>
                     <ModalBody>
+                        Select/deselect sub-problems to display<br /><br />
                         <Table borderless size="sm">
                             <thead>
                                 <tr>
@@ -219,9 +233,12 @@ class SubProblems extends React.Component {
                 <Modal isOpen={this.state.createEditModal} className={this.props.className}>
                     <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; View : Sub-Problems : {this.state.createEditType} </ModalHeader>
                     <ModalBody>
+                        {this.state.createEditType === 'Create' ? 'Enter' : 'Update'} sub-problem name and select/deselect variables for sub-problem membership<br/><br/>
                         <InputGroup>
-                            <Label for="createEditText">Name: </Label>
-                            <Input type="text" id="createEditText" value={this.state.name} placeholder="Enter sub-problem name" onChange={this.onCreateEditNameChange}/>
+                            <InputGroupAddon addonType="prepend">
+                                <InputGroupText>Name: </InputGroupText>
+                             </InputGroupAddon>
+                            <Input type="text" value={this.state.name} placeholder="Enter sub-problem name" onChange={this.onCreateEditNameChange}/>
                         </InputGroup>
                         <Table borderless size="sm">
                             <thead>
