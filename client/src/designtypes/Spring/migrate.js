@@ -16,6 +16,15 @@ export function migrate(design) {
     switch(design.version) {
     case "1":
         // Current model version
+         console.log('Convert from 1 to 2');
+         design.subproblems = [];
+         design.subproblems.push({
+                 name: 'test'
+         });
+         migrated_design.version = "2"; // last thing... set the migrated model version
+        break;
+    case "2":
+        // Current model version
         // console.log('Convert from 1 to 2');
         // To be defined - presently do nothing
         // migrated_design.version = "2"; // last thing... set the migrated model version

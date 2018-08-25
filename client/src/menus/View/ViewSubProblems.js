@@ -1,0 +1,315 @@
+import React from 'react';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, Input, Label } from 'reactstrap';
+import { connect } from 'react-redux';
+
+class SubProblems extends React.Component {
+    constructor(props) {
+        super(props);
+        this.toggle = this.toggle.bind(this);
+        this.onCreate = this.onCreate.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+        this.onEdit = this.onEdit.bind(this);
+        this.onCreateEditNameChange = this.onCreateEditNameChange.bind(this);
+        this.onCreateEditCancel = this.onCreateEditCancel.bind(this);
+        this.onCreateEditSave = this.onCreateEditSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onDeleteNo = this.onDeleteNo.bind(this);
+        this.onDeleteYes = this.onDeleteYes.bind(this);
+        this.onSelectAll = this.onSelectAll.bind(this);
+        this.onDeselectAll = this.onDeselectAll.bind(this);
+        this.onCancel = this.onCancel.bind(this);
+        this.onSave = this.onSave.bind(this);
+        this.state = {
+            modal: false,
+            createEditModal: false,
+            deleteModal: false,
+            subproblems: this.props.subproblems
+        };
+    }
+
+    // ===========================================================================
+    // Sub-Problem Modal
+    // ===========================================================================
+
+    toggle() {
+        console.log('In SubProblems.toggle');
+        // Pop-up subproblem modal, and copy model subproblems to local subproblems
+        this.setState({
+            modal: !this.state.modal,
+            subproblems: this.props.subproblems
+        });
+    }
+
+    onCreate() {
+        console.log('In SubProblems.onCreate');
+        // Pop-up Create/Edit modal, set type to Create, set name to blank, and set all variables to inactive
+        this.setState({
+            createEditModal: !this.state.createEditModal,
+            createEditType: "Create",
+            name: ""
+        });
+    }
+
+    onEdit(name, event) {
+        console.log('In SubProblems.onEdit name=',name,' event.target.value=',event.target.value);
+        // Pop-up Create/Edit modal, set type to Edit, set name to entry's name, and set all variables to inactive
+        this.setState({
+            createEditModal: !this.state.createEditModal,
+            createEditType: "Edit",
+            name: name
+        });
+    }
+
+    onDelete(name, event) {
+        console.log('In SubProblems.onDelete name=',name,' event.target.value=',event.target.value);
+        // Pop-up confirmation modal
+        this.setState({
+            deleteModal: !this.state.deleteModal,
+            name: name
+        });
+    }
+
+    onSelect(name, event) {
+        console.log('In SubProblems.onSelect name=',name,' event.target.value=',event.target.value);
+        // Find subproblem by name and set active/inactive
+    }
+
+    onSelectAll() {
+        console.log('In SubProblems.onSelectAll');
+        // Activate all subproblems
+    }
+
+    onDeselectAll() {
+        console.log('In SubProblems.onDeselectAll');
+        // Deactivate all subproblems
+    }
+
+    onCancel() {
+        console.log('In SubProblems.onCancel');
+        this.setState({
+            modal: !this.state.modal
+        });
+        // No-op
+    }
+
+    onSave() {
+        console.log('In SubProblems.onSave');
+        this.setState({
+            modal: !this.state.modal
+        });
+        // Update all subproblems
+    }
+    
+    // ===========================================================================
+    // Create/Edit Modal
+    // ===========================================================================
+
+    onCreateEditNameChange(event) {
+        console.log('In SubProblems.onCreateEditNameChange event.target.value=',event.target.value);
+        // Update local subproblem name
+        this.setState({
+            name: event.target.value
+        });
+    }
+
+    onCreateEditSelect(name, event) {
+        console.log('In SubProblems.onCreateEditSelect name=',name,' event.target.value=',event.target.value);
+        // Update local subproblem active/inactive variable's masks
+    }
+
+    onCreateEditSelectAll(event) {
+        console.log('In SubProblems.onCreateEditSelectAll');
+        // Update local subproblem variable's masks to active
+    }
+
+    onCreateEditDeselectAll(event) {
+        console.log('In SubProblems.onCreateEditDeselectAll');
+        // Update local subproblem variable's masks to active
+    }
+
+    onCreateEditCancel() {
+        console.log('In SubProblems.onCreateEditCancel');
+        // Hide Create/Edit modal, and No-op
+        this.setState({
+            createEditModal: !this.state.createEditModal
+        });
+    }
+
+    onCreateEditSave() {
+        console.log('In SubProblems.onCreateEditSave');
+        // Hide Create/Edit modal, validate input (name not blank) and if valid update subproblem by name
+        this.setState({
+            createEditModal: !this.state.createEditModal
+        });
+    }
+
+    // ===========================================================================
+    // Delete Modal
+    // ===========================================================================
+
+    onDeleteNo() {
+        console.log('In SubProblems.onDeleteNo');
+        // Hide confirmation modal, and No-op
+        this.setState({
+            deleteModal: !this.state.deleteModal
+        });
+    }
+
+    onDeleteYes() {
+        console.log('In SubProblems.onDeleteYes name=', this.state.name);
+        // Hide confirmation modal, and Delete subproblem by name
+        this.setState({
+            deleteModal: !this.state.deleteModal
+        });
+    }
+
+    // ===========================================================================
+    // Delete Modal
+    // ===========================================================================
+
+    render() {
+        console.log('In SubProblems.render');
+        return (
+            <React.Fragment>
+                <DropdownItem onClick={this.toggle}>
+                    Sub-Problems
+                </DropdownItem>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; View : Sub-Problems </ModalHeader>
+                    <ModalBody>
+                        <Table borderless size="sm">
+                            <thead>
+                                <tr>
+                                    <th className="text-center" width="10%"></th>
+                                    <th className="text-left">Name</th>
+                                    <th className="text-center" width="10%"></th>
+                                    <th className="text-center" width="10%"><Badge color="secondary" onClick={this.onCreate}>+</Badge></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {   this.props.subproblems === undefined || this.props.subproblems.length === 0 ? <tr><td colSpan="4">No Sub-Problems</td></tr> :
+                                this.props.subproblems.map(
+                                    (subproblem) => {
+                                        return (
+                                            <tr key={subproblem.name}>
+                                                <td><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={subproblem.display !== undefined && subproblem.display} onChange={(event) => {this.onSelect(subproblem.name, event)}} /></td>
+                                                <td>{subproblem.name}</td>
+                                                <td><Badge color="secondary" onClick={(event) => {this.onEdit(subproblem.name, event)}}><span className="oi oi-pencil" title="pencil" aria-hidden="true" /></Badge></td>
+                                                <td><Badge color="secondary" onClick={(event) => {this.onDelete(subproblem.name, event)}}><span className="oi oi-trash" title="trash" aria-hidden="true" /></Badge></td>
+                                            </tr>
+                                        );
+                                    })
+                            }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colSpan="4">
+                                        <Badge color="secondary" onClick={this.onSelectAll}>Select All</Badge>{' '}
+                                        <Badge color="secondary" onClick={this.onDeselectAll}>Deselect All</Badge>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </Table>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}
+                        <Button color="primary" onClick={this.onSave}>Save</Button>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.createEditModal} className={this.props.className}>
+                    <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; View : Sub-Problems : {this.state.createEditType} </ModalHeader>
+                    <ModalBody>
+                        <InputGroup>
+                            <Label for="createEditText">Name: </Label>
+                            <Input type="text" id="createEditText" value={this.state.name} placeholder="Enter sub-problem name" onChange={this.onCreateEditNameChange}/>
+                        </InputGroup>
+                        <Table borderless size="sm">
+                            <thead>
+                                <tr>
+                                    <th colSpan="2">Independent Variables</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {   this.props.design_parameters !== undefined && this.props.design_parameters.map(
+                                    (design_parameter) => {
+                                        return (
+                                            <tr key={design_parameter.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={design_parameter.ioclass !== undefined && design_parameter.ioclass} onChange={(event) => {this.onCreateEditSelect(design_parameter.name, event)}} /></td>
+                                                <td className="text-left">{design_parameter.name}</td>
+                                            </tr>
+                                        );
+                                    })
+                            }
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th colSpan="2">Dependent Variables</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {   this.props.state_variables !== undefined && this.props.state_variables.map(
+                                    (state_variable) => {
+                                        return (
+                                            <tr key={state_variable.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={state_variable.ioclass !== undefined && state_variable.ioclass} onChange={(event) => {this.onCreateEditSelect(state_variable.name, event)}} /></td>
+                                                <td className="text-left">{state_variable.name}</td>
+                                            </tr>
+                                        );
+                                    })
+                            }
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th colSpan="2">Calculation Inputs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {   this.props.constants !== undefined && this.props.constants.map(
+                                    (constant) => {
+                                        return (
+                                            <tr key={constant.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={constant.ioclass !== undefined && constant.ioclass} onChange={(event) => {this.onCreateEditSelect(constant.name, event)}} /></td>
+                                                <td className="text-left">{constant.name}</td>
+                                            </tr>
+                                        );
+                                    })
+                            }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colSpan="3">
+                                        <Badge color="secondary" onClick={this.onCreateEditSelectAll}>Select All</Badge>{' '}
+                                        <Badge color="secondary" onClick={this.onCreateEditDeselectAll}>Deselect All</Badge>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </Table>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.onCreateEditCancel}>Cancel</Button>{' '}
+                        <Button color="primary" onClick={this.onCreateEditSave}>Save</Button>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.deleteModal} className={this.props.className}>
+                    <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; View : Sub-Problems : Delete </ModalHeader>
+                    <ModalBody>
+                        Do you really want to delete sub-problem {this.state.name}?
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.onDeleteNo}>No</Button>{' '}
+                        <Button color="primary" onClick={this.onDeleteYes}>Yes</Button>
+                    </ModalFooter>
+                </Modal>
+            </React.Fragment>
+        );
+    }
+}  
+
+const mapStateToProps = state => ({
+    subproblems: state.subproblems,
+    constants: state.constants,
+    design_parameters: state.design_parameters,
+    state_variables: state.state_variables
+});
+
+export default connect(mapStateToProps)(SubProblems);

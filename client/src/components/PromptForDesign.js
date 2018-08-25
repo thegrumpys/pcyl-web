@@ -217,7 +217,7 @@ export class PromptForDesign extends React.Component {
         return (
             <React.Fragment>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>
+                    <ModalHeader>
                     <img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/>
                       Open Design Optimization Platform
                     </ModalHeader>

@@ -112,11 +112,11 @@ class FileSaveAs extends React.Component {
                     Save As&hellip;
                 </DropdownItem>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; File : Save As </ModalHeader>
+                    <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; File : Save As </ModalHeader>
                     <ModalBody>
                         <br />
                         <Label for="fileSaveAsText">Save As:</Label>
-                        <Input type="text" id="fileSaveAsText" placeholder="Enter design name here" onChange={this.onTextInput}/>
+                        <Input type="text" id="fileSaveAsText" placeholder="Enter design name" onChange={this.onTextInput}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}

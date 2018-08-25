@@ -101,7 +101,7 @@ class FileDelete extends React.Component {
                     Delete&hellip;
                 </DropdownItem>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; File : Delete </ModalHeader>
+                    <ModalHeader><img src="favicon.ico" alt="Open Design Optimization Platform (ODOP) icon"/> &nbsp; File : Delete </ModalHeader>
                     <ModalBody>
                         <br />
                         <Label for="fileDeleteSelect">Select design to delete:</Label>

@@ -30,6 +30,7 @@ import ActionSeek from '../menus/Action/ActionSeek';
 import ActionTrade from '../menus/Action/ActionTrade';
 import ActionSelectSize from '../menus/Action/ActionSelectSize';
 import ActionSelectCatalog from '../menus/Action/ActionSelectCatalog';
+import ViewSubProblems from '../menus/View/ViewSubProblems';
 import ViewViolations from '../menus/View/ViewViolations';
 import HelpIndex from '../menus/Help/HelpIndex';
 import HelpAbout from '../menus/Help/HelpAbout';
@@ -115,12 +116,7 @@ class App extends Component {
                                     View
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem disabled>
-                                        Define  Sub-Problems&hellip;
-                                    </DropdownItem>
-                                    <DropdownItem disabled>
-                                        Display Sub-Problems&hellip;
-                                    </DropdownItem>
+                                    <ViewSubProblems />
                                     <DropdownItem divider />
                                     <DropdownItem disabled>
                                         Report&hellip;
