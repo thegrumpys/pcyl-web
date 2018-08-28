@@ -1,4 +1,4 @@
-import { changeConstantValues } from '../actionCreators';
+import { changeOutputSymbolValues } from '../actionCreators';
 import { init as pcyl_init } from '../../designtypes/Piston-Cylinder/init';
 import { init as solid_init } from '../../designtypes/Solid/init';
 import { init as spring_init } from '../../designtypes/Spring/init';
@@ -8,41 +8,47 @@ export function invokeInit(store) {
     
 //    console.log('Entering invokeInit');
     
-    var dp;
-    var c;
+    var element;
+    const output_offest_flag = false;
 
     var design = store.getState();
     
-    // Loop to create d from constants
-    var d = [];
-    for (let i = 0; i < design.constants.length; i++) {
-        c = design.constants[i];
-        d[i] = c.value;
-    }
-
-    // Loop to create p from design_parameters
+    // Loop to create p and x_in from symbol_table
     var p = [];
-    for (let i = 0; i < design.design_parameters.length; i++) {
-        dp = design.design_parameters[i];
-        p[i] = dp.value;
+    var ip = 0;
+    for (let i = 0; i < design.symbol_table.length; i++) {
+        element = design.symbol_table[i];
+        if (element.input) {
+            output_offest_flag && console.log('export const',element.name,'=',ip++,';');
+            p.push(element.value);
+        }
+    }
+    var x = [];
+    var ix = 0;
+    for (let i = 0; i < design.symbol_table.length; i++) {
+        element = design.symbol_table[i];
+        if (!element.input) {
+            output_offest_flag && console.log('export const',element.name,'=',ix++,';');
+            x.push(element.value);
+        }
     }
 
-    // Update constants from d to d
+    // Compute outputs x from inputs p using equations
     switch(design.type) {
     default:
     case 'Piston-Cylinder':
-        d = pcyl_init(d, p);
+        x = pcyl_init(p, x);
         break;
     case 'Solid':
-        d = solid_init(d, p);
+        x = solid_init(p, x);
         break;
     case 'Spring':
-        d = spring_init(d, p);
+        x = spring_init(p, x);
         break;
     }
 
-    // Compute and dispatch constant changes
-    store.dispatch(changeConstantValues(d, true));
+    // Compute and dispatch output changes
+    store.dispatch(changeOutputSymbolValues(x));
     
 //    console.log('Exiting invokeInit');
 }

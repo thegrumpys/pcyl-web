@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, UncontrolledTooltip  } from 'reactstrap';
-import NameValueUnitsRowConstant from './NameValueUnitsRowConstant';
-import NameValueUnitsRowDesignParameter from './NameValueUnitsRowDesignParameter';
-import NameValueUnitsRowStateVariable from './NameValueUnitsRowStateVariable';
+import NameValueUnitsRowCalcInput from './NameValueUnitsRowCalcInput';
+import NameValueUnitsRowIndependentVariable from './NameValueUnitsRowIndependentVariable';
+import NameValueUnitsRowDependentVariable from './NameValueUnitsRowDependentVariable';
 import { connect } from 'react-redux';
 
 export class NameValueUnitsTable extends React.Component {
@@ -23,7 +23,7 @@ export class NameValueUnitsTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.design_parameters.map((design_parameter,index) => <NameValueUnitsRowDesignParameter key={design_parameter.name} design_parameter={design_parameter} index={index} />)}
+                        {this.props.symbol_table.map((element,index) => element.input && element.equationset && !element.hidden && <NameValueUnitsRowIndependentVariable key={element.name} element={element} index={index} />)}
                     </tbody>
                     <thead>
                         <tr>
@@ -31,10 +31,10 @@ export class NameValueUnitsTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.state_variables.map((state_variable,index) => <NameValueUnitsRowStateVariable key={state_variable.name} state_variable={state_variable} index={index} />)}
+                        {this.props.symbol_table.map((element,index) => !element.input && element.equationset && !element.hidden && <NameValueUnitsRowDependentVariable key={element.name} element={element} index={index} />)}
                     </tbody>
                     <thead>
-                        { this.props.constants.length > 0 &&
+                        { (this.props.symbol_table.reduce((accum,element)=>{if (!element.equationset && !element.hidden) return accum+1; else return accum;}, 0) > 0) &&
                             (<tr>
                                 <th className="text-center bg-secondary text-white" colSpan="6" id="CITitle">Calculation Inputs</th>
                                 <UncontrolledTooltip placement="top" target="CITitle">Calculation Inputs Title ToolTip</UncontrolledTooltip>
@@ -42,14 +42,14 @@ export class NameValueUnitsTable extends React.Component {
                         }
                     </thead>
                     <tbody>
-                        {this.props.constants.map((constant,index) => <NameValueUnitsRowConstant key={constant.name} constant={constant} index={index} />)}
+                        {this.props.symbol_table.map((element,index) => !element.equationset && !element.hidden && <NameValueUnitsRowCalcInput key={element.name} element={element} index={index} />)}
                     </tbody>
                 </Table>
-                <UncontrolledTooltip placement="top" target="IVTitle">Independent Variables Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="NameTitle">Name Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="ValueTitle">Value(Fix) Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="UnitsTitle">Units Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="top" target="DVTitle">Dependent Variables Title ToolTip</UncontrolledTooltip>
+                <UncontrolledTooltip placement="top" target="IVTitle">Inputs to design equations</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="NameTitle">Variable names</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="ValueTitle">Current values <br /> (Check box at right to FIX)</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="UnitsTitle">Units (information only)</UncontrolledTooltip>
+                <UncontrolledTooltip placement="top" target="DVTitle">Outputs from design equations</UncontrolledTooltip>
             </React.Fragment>
         );
     }
@@ -57,9 +57,7 @@ export class NameValueUnitsTable extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    constants: state.constants,
-    design_parameters: state.design_parameters,
-    state_variables: state.state_variables
+    symbol_table: state.symbol_table
 });
 
 export default connect(mapStateToProps)(NameValueUnitsTable);

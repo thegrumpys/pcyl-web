@@ -1,4 +1,5 @@
-export function eqnset(d, p) {
+import * as o from './offsets';
+export function eqnset(p, x) {
     /** ***************************************************************** */
     /*
      * EQNSET contains an equation set providing a math model of the design
@@ -16,18 +17,12 @@ export function eqnset(d, p) {
      * m_flag = 0 if call is from search, no console I/O permitted. m_flag > 0
      * if "special" call requesting direct output.
      */
-    const pressure = 0;
-    const radius = 1;
-    const thickness = 2;
-    const force = 0;
-    const area = 1;
-    const stress = 2;
-    var x = [];
-    x[area] = Math.PI * p[radius] * p[radius];
-    x[force] = p[pressure] * x[area];
-    x[stress] = (p[pressure] * p[radius]) / (2.0 * p[thickness]);
+    x[o.area] = Math.PI * p[o.radius] * p[o.radius];
+    x[o.force] = p[o.pressure] * x[o.area];
+    x[o.stress] = (p[o.pressure] * p[o.radius]) / (2.0 * p[o.thickness]);
 //    if (M_FLAG)
 //        console.log('No report available.');
+//    console.log('In eqnset p=',p,' x=',x);
     return x;
 }
 

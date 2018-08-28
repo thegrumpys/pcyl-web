@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, UncontrolledTooltip } from 'reactstrap';
-import ConstraintsMinRowDesignParameter from './ConstraintsMinRowDesignParameter';
-import ConstraintsMinRowStateVariable from './ConstraintsMinRowStateVariable';
+import ConstraintsMinRowIndependentVariable from './ConstraintsMinRowIndependentVariable';
+import ConstraintsMinRowDependentVariable from './ConstraintsMinRowDependentVariable';
 import { connect } from 'react-redux';
 
 export class ConstraintsMinTable extends React.Component {
@@ -21,7 +21,7 @@ export class ConstraintsMinTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.design_parameters.map((design_parameter) => <ConstraintsMinRowDesignParameter key={design_parameter.name} design_parameter={design_parameter} />)}
+                        {this.props.symbol_table.map((element) => element.input && element.equationset && <ConstraintsMinRowIndependentVariable key={element.name} element={element} />)}
                     </tbody>
                     <thead>
                         <tr>
@@ -29,14 +29,14 @@ export class ConstraintsMinTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.state_variables.map((state_variable) => <ConstraintsMinRowStateVariable key={state_variable.name} state_variable={state_variable} />)}
+                        {this.props.symbol_table.map((element) => !element.input && element.equationset && <ConstraintsMinRowDependentVariable key={element.name} element={element} />)}
                     </tbody>
                 </Table>
-                <UncontrolledTooltip placement="top" target="IVMinConstraintTitle">IV Min Constraint Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="MinConstraintConstrainTitle">Min Constraint Constrain Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="MinConstraintValueTitle">Min Constraint Value Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="bottom" target="MinConstraintViolationTitle">Min Constraint Violation Title ToolTip</UncontrolledTooltip>
-                <UncontrolledTooltip placement="top" target="DVMinConstraintTitle">DV Min Constraint Title ToolTip</UncontrolledTooltip>
+                <UncontrolledTooltip placement="top" target="IVMinConstraintTitle">Lower limits on Independent Variables</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="MinConstraintConstrainTitle">Check box to establish lower limit</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="MinConstraintValueTitle">Enter value for lower limit</UncontrolledTooltip>
+                <UncontrolledTooltip placement="bottom" target="MinConstraintViolationTitle">Measure of constraint <br />satisfaction (-) or violation (+)</UncontrolledTooltip>
+                <UncontrolledTooltip placement="top" target="DVMinConstraintTitle">Lower limits on Dependent Variables</UncontrolledTooltip>
             </React.Fragment>
         );
     }
@@ -44,8 +44,7 @@ export class ConstraintsMinTable extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    design_parameters: state.design_parameters,
-    state_variables: state.state_variables
+    symbol_table: state.symbol_table
 });
 
 export default connect(mapStateToProps)(ConstraintsMinTable);

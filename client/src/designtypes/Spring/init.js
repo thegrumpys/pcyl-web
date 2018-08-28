@@ -1,38 +1,8 @@
-export function init(d, p) {
-    console.log('In init d=',d,' p=',p);
+import * as o from './offsets';
+import * as mo from './mat_ips_offsets';
 
-// const Spring_Type = 0;
- const Material_Type = 1;
- const ASTM_Fed_Spec = 2;
-// const End_Type = 3;
-// const Catalog_Number = 4;
- const Process = 5;
-// const Material_File = 6;
-// const Dialog_Switch = 7;
- const Prop_Calc_Method = 8;
-// const End_Calc_Method = 9;
- const Life_Category = 10;
- const Material_Index = 11;
- const End_Type_Index = 12;
- const Inactive_Coils = 13;
- const Add_Coils_Solid = 14;
- const Density = 15;
- const Torsion_Modulus = 16;
- const Hot_Factor_Kh = 17;
- const Tensile = 18;
- const PC_Tensile_Endur = 19;
- const PC_Tensile_Stat = 20;
-// const unused = 21;
- const Stress_Lim_Endur = 22;
- const Stress_Lim_Stat = 23;
- const tbase010 = 24;
- const tbase400 = 25;
- const const_term = 26;
- const slope_term = 27;
- const tensile_010 = 28;
- 
- const Wire_Dia = 1;
- 
+export function init(p, x) {
+//    console.log('In init p=',p);
  var i;
  const ten3 = 1000.0;
  var tensile_400;
@@ -45,40 +15,8 @@ export function init(d, p) {
 //       oldmfil=material_file;
 //       end;
 
-// const matnam = 0;
- const astm_fs = 1;
- const fedspec = 2;
- const dens = 3;
-// const ee = 4;
- const gg = 5;
- const kh = 6
- const t010 = 7;
- const t400 = 8;
- const pte1 = 9;
-// const pte2 = 10;
-// const pte3 = 11;
-// const pte4 = 12;
- //    pte5 
-// const pte6 = 13;
-// const pte7 = 14;
-// const pte8 = 15;
-// const ptb1 = 16;
-// const ptb2 = 17;
-// const ptb3 = 18;
-// const ptb4 = 19;
- //    ptb5
-// const ptb6 = 20;
-// const ptb7 = 21;
-// const ptb8 = 22;
-// const silf = 23;
-// const sihf = 24;
-// const sisr = 25;
-// const siznam = 26;
-// const dumyc = 27;
-// const longnam = 28;
- 
  var m_tab = require('./mat_ips.json');
-    console.log("m_tab=", m_tab);
+//    console.log("m_tab=", m_tab);
  
 
  /*  taken from SETIDX.PLI
@@ -89,9 +27,9 @@ export function init(d, p) {
  Cross check values of PROP_CALC_METHOD and END_CALC_METHOD.
 */
  //
-    i = d[Material_Type];
-//    console.log("i_1= ", i);
-    d[Material_Index] = i;
+    i = x[o.Material_Type];
+//    console.log("i=", i);
+//    x[o.Material_Index] = i;
     
 // NOMORE:
 //  end_type_index=0;
@@ -149,47 +87,47 @@ export function init(d, p) {
 
                /*  copy from material table to constants  */
 // i=material_index;
-    i = d[Material_Index];
+//    i = x[o.Material_Index];
 //    console.log("i_2= ", i);
 // if i > 0 then
-    if (i > 0) {
+//    if (i > 0) {
 //    do;
 //    if prop_calc_method ^= 1 then             /*   debug  */
-    if (d[Prop_Calc_Method] !== 1) {
+    if (x[o.Prop_Calc_Method] !== 1) {
 //           put skip list('TAB2D:   PROP_CALC_METHOD SET TO 1.');
-        console.log('TAB2D:   PROP_CALC_METHOD SET TO 1.');
+//        console.log('TAB2D:   PROP_CALC_METHOD SET TO 1.');
 //    prop_calc_method = 1;
-        d[Prop_Calc_Method] = 1;
+        x[o.Prop_Calc_Method] = 1;
     }
 //
 //    material_type    = m_tab(material_index).matnam;
 //    astm_fed_spec    = m_tab(i).astm_fs;
-    d[ASTM_Fed_Spec] = m_tab[i][astm_fs] + '/' + m_tab[i][fedspec];
+    x[o.ASTM_Fed_Spec] = m_tab[i][mo.astm_fs] + '/' + m_tab[i][mo.fedspec];
 //    if m_tab(i).kh < 1.0 then process = 'HOT_WOUND';
-    if (m_tab[i][kh] < 1.0) {
-        d[Process] = "Hot_Wound";
+    if (m_tab[i][mo.kh] < 1.0) {
+        x[o.Process] = "Hot_Wound";
     }
 //             else process = 'COLD_COILED';
     else {
-        d[Process] = "Cold_Coiled";
+        x[o.Process] = "Cold_Coiled";
     }
 //    density      = m_tab(i).dens;
-    d[Density]      = m_tab[i][dens];
+    x[o.Density]      = m_tab[i][mo.dens];
 //    torsion_modulus  = m_tab(i).gg;
-    d[Torsion_Modulus]  = ten3 * m_tab[i][gg];
+    x[o.Torsion_Modulus]  = ten3 * m_tab[i][mo.gg];
 //
 //    hot_factor_kh    = m_tab(i).kh;
-    d[Hot_Factor_Kh]    = m_tab[i][kh];
+    x[o.Hot_Factor_Kh]    = m_tab[i][mo.kh];
 //    tensile_010      = m_tab(i).t010;
-    d[tensile_010]      = ten3 * m_tab[i][t010];
+    x[o.tensile_010]      = ten3 * m_tab[i][mo.t010];
 //    tensile_400      = m_tab(i).t400;
-    tensile_400         = ten3 * m_tab[i][t400];
+    tensile_400         = ten3 * m_tab[i][mo.t400];
     
-    var life_category = d[Life_Category];
+    var life_category = x[o.Life_Category];
 //    pc_tensile_endur = m_tab(i).pte(life_catagory);
-    d[PC_Tensile_Endur] = m_tab[i][pte1+life_category-1];
+    x[o.PC_Tensile_Endur] = m_tab[i][mo.pte1+life_category-1];
 //    pc_tensile_stat  = m_tab(i).fy;
-    d[PC_Tensile_Stat]  = m_tab[i][pte1];
+    x[o.PC_Tensile_Stat]  = m_tab[i][mo.pte1];
 //    pc_tensile_bend  = m_tab(i).ptb(life_catagory);
 
     //                         /*  Kludge for torsion  */
@@ -200,21 +138,21 @@ export function init(d, p) {
 //    end;
 //
 //    wire_dia=p(2);
-//    console.log("wire_dia = ", p[Wire_Dia]);
+//    console.log("wire_dia = ", x[o.Wire_Dia]);
 //    const_term=log10(tbase010);
-    d[const_term] = Math.log10(d[tbase010]);
+    x[o.const_term] = Math.log10(x[o.tbase010]);
 //    slope_term=(tensile_400 - tensile_010) /
 //           (log10(tbase400) - const_term);
 //    console.log("tensile_400 = ", tensile_400);
-    d[slope_term] = (tensile_400 - d[tensile_010]) / (Math.log10(d[tbase400]) - d[const_term]);
-//    tensile=slope_term*(log10(p[Wire_Dia])-const_term) + tensile_010;
-    d[Tensile] = d[slope_term] * (Math.log10(p[Wire_Dia]) - d[const_term]) + d[tensile_010];
+    x[o.slope_term] = (tensile_400 - x[o.tensile_010]) / (Math.log10(x[o.tbase400]) - x[o.const_term]);
+//    tensile=slope_term*(log10(x[o.Wire_Dia])-const_term) + tensile_010;
+    x[o.Tensile] = x[o.slope_term] * (Math.log10(p[o.Wire_Dia]) - x[o.const_term]) + x[o.tensile_010];
 //    stress_lim_endur=tensile*pc_tensile_endur/100.0;
-    d[Stress_Lim_Endur] = d[Tensile] * d[PC_Tensile_Endur] / 100.0;
+    x[o.Stress_Lim_Endur] = x[o.Tensile] * x[o.PC_Tensile_Endur] / 100.0;
 //    stress_lim_stat =tensile*pc_tensile_stat /100.0;
-    d[Stress_Lim_Stat]  = d[Tensile] * d[PC_Tensile_Stat]  / 100.0;
+    x[o.Stress_Lim_Stat]  = x[o.Tensile] * x[o.PC_Tensile_Stat]  / 100.0;
 //    end;
-        }
+//        }
 
                /*  copy from end type table to constants  */
          /*  check these values.     See AS Design Hdbk. p52  */
@@ -237,6 +175,7 @@ export function init(d, p) {
 //       hook_deflect_all=0.0;
 //    end;
 
-return d;
+//    console.log('In init p=',p,' x=',x);
+    return x;
 
 }

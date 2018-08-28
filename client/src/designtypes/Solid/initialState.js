@@ -1,21 +1,8 @@
 import { CONSTRAINED } from '../../store/actionTypes';
 export const initialState = {
-    "constants": [
+    "symbol_table": [
         {
-            "name": "Material",
-            "value": 6,
-            "units": "",
-            "type": "table",
-            "table": "materials"
-        },
-        {
-            "name": "Density",
-            "value": 0.036,
-            "units": "lb/cu-in"
-        }
-    ],
-    "design_parameters": [
-        {
+            "input": true,
             "name": "Length",
             "value": 12.0,
             "units": "inches",
@@ -24,9 +11,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 100.00,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Longest dimension",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": true,
             "name": "Width",
             "value": 10.0,
             "units": "inches",
@@ -35,9 +26,13 @@ export const initialState = {
             "cmin": 0.0,
             "cmax": 80.0,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Width dimension",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": true,
             "name": "Height",
             "value": 8.0,
             "units": "inches",
@@ -46,11 +41,45 @@ export const initialState = {
             "cmin": 0.0,
             "cmax": 60.0,
             "ioclass": 0,
-            "sdlim": 0
-        }
-    ],
-    "state_variables": [
+            "sdlim": 0,
+            "tooltip": "Shortest dimension",
+            "equationset": true,
+            "hidden": false
+        },
         {
+            "input": true,
+            "name": "Material",
+            "value": 6,
+            "units": "",
+            "type": "table",
+            "table": "materials",
+            "lmin": 0,
+            "lmax": 0,
+            "cmin": 0,
+            "cmax": 0,
+            "ioclass": 0,
+            "sdlim": 0,
+            "tooltip": "Select from list",
+            "equationset": false,
+            "hidden": false
+        },
+        {
+            "input": true,
+            "name": "Density",
+            "value": 0.036,
+            "units": "lb/cu-in",
+            "lmin": 0,
+            "lmax": 0,
+            "cmin": 0,
+            "cmax": 0,
+            "ioclass": 0,
+            "sdlim": 0,
+            "tooltip": "Weight per unit volume of the selected material",
+            "equationset": false,
+            "hidden": false
+        },
+        {
+            "input": false,
             "name": "Volume",
             "value": 0,
             "units": "cu-in",
@@ -59,9 +88,13 @@ export const initialState = {
             "cmin": 1.0,
             "cmax": 1200.0,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Three-dimensional space enclosed",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "Surface Area",
             "value": 0,
             "units": "sq-in",
@@ -70,9 +103,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 900,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Sum of the area of the surfaces",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "VolToSurfArea",
             "value": 0,
             "units": "ratio",
@@ -81,9 +118,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 10,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Computed ratio of volume to surface area",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "Girth",
             "value": 0,
             "units": "inches",
@@ -92,9 +133,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 100.0,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Perimeter around width and height dimensions",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "Length+Girth",
             "value": 0,
             "units": "inches",
@@ -103,9 +148,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 108.0,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Sum of length and girth dimensions",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "Diagonal",
             "value": 0,
             "units": "inches",
@@ -114,9 +163,13 @@ export const initialState = {
             "cmin": 0,
             "cmax": 100.,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "3D distance from corner to furthest corner",
+            "equationset": true,
+            "hidden": false
         },
         {
+            "input": false,
             "name": "Weight",
             "value": 0,
             "units": "lb",
@@ -125,7 +178,10 @@ export const initialState = {
             "cmin": 0,
             "cmax": 70.0,
             "ioclass": 0,
-            "sdlim": 0
+            "sdlim": 0,
+            "tooltip": "Volume times Density of the selected material",
+            "equationset": true,
+            "hidden": false
         }
     ],
     "labels": [
