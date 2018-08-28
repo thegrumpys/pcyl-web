@@ -19,9 +19,11 @@ import { migrate as solid_migrate } from '../designtypes/Solid/migrate';
 import { migrate as spring_migrate } from '../designtypes/Spring/migrate';
 
 export class PromptForDesign extends React.Component {
+    
     constructor(props) {
         super(props);
         this.onCancel = this.onCancel.bind(this);
+        this.onLoadInitialState = this.onLoadInitialState.bind(this);
         this.onOpen = this.onOpen.bind(this);
         this.onSelectType = this.onSelectType.bind(this);
         this.onSelectName = this.onSelectName.bind(this);
@@ -37,12 +39,6 @@ export class PromptForDesign extends React.Component {
 
     getDesignTypes() {
 //        console.log('In PromptForDesign.getDesignTypes');
-        
-        /* eslint-disable no-underscore-dangle */
-        const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-        /* eslint-enable */
-
-        const middleware = composeEnhancers(applyMiddleware(/*loggerMiddleware,*/dispatcher));
 
         // Get the designs and store them in state
         displaySpinner(true);
@@ -66,34 +62,12 @@ export class PromptForDesign extends React.Component {
                     modal: !this.state.modal
                 });
                 displayError('GET of design types failed with message: \''+error.message+'\'. Using builtin initial state instead. You may continue in "demo mode" but you will be unable to save your work.');
-                var initialState;
-                switch(this.state.type) {
-                default:
-                case 'Piston-Cylinder':
-                    initialState = pcyl_initialState;
-                    break;
-                case 'Solid':
-                    initialState = solid_initialState;
-                    break;
-                case 'Spring':
-                    initialState = spring_initialState;
-                    break;
-                }
-                var state = Object.assign({}, initialState, { system_controls: initialSystemControls }); // Merge initialState and initialSystemControls
-                const store = createStore(reducers, state, middleware);
-                store.dispatch(startup());
-                ReactDOM.render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root2'));
+                this.loadInitialState(this.state.type);
             });
     }
     
     getDesignNames(type) {
-//        console.log('In PromptForDesign.getDesignNames');
-        
-        /* eslint-disable no-underscore-dangle */
-        const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-        /* eslint-enable */
-
-        const middleware = composeEnhancers(applyMiddleware(/*loggerMiddleware,*/dispatcher));
+//        console.log('In PromptForDesign.getDesignNames type=', type);
 
         // Get the designs and store them in state
         displaySpinner(true);
@@ -116,23 +90,7 @@ export class PromptForDesign extends React.Component {
                     modal: !this.state.modal
                 });
                 displayError('GET of design names for design types failed with message: \''+error.message+'\'. Using builtin initial state instead. You may continue in "demo mode" but you will be unable to save your work.');
-                var initialState;
-                switch(type) {
-                default:
-                case 'Piston-Cylinder':
-                    initialState = pcyl_initialState;
-                    break;
-                case 'Solid':
-                    initialState = solid_initialState;
-                    break;
-                case 'Spring':
-                    initialState = spring_initialState;
-                    break;
-                }
-                var state = Object.assign({}, initialState, { system_controls: initialSystemControls }); // Merge initialState and initialSystemControls
-                const store = createStore(reducers, state, middleware);
-                store.dispatch(startup());
-                ReactDOM.render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root2'));
+                this.loadInitialState(this.state.type);
             });
     }
     
@@ -174,7 +132,36 @@ export class PromptForDesign extends React.Component {
             })
             .catch(error => {
                 displayError('GET of \''+name+'\' design failed with message: \''+error.message+'\'');
+                this.loadInitialState(type);
             });
+    }
+    
+    loadInitialState(type) {
+//        console.log('In PromptForDesign.loadInitialState type=', type);
+        
+        /* eslint-disable no-underscore-dangle */
+        const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+        /* eslint-enable */
+
+        const middleware = composeEnhancers(applyMiddleware(/*loggerMiddleware,*/dispatcher));
+
+        var initialState;
+        switch(type) {
+        default:
+        case 'Piston-Cylinder':
+            initialState = pcyl_initialState;
+            break;
+        case 'Solid':
+            initialState = solid_initialState;
+            break;
+        case 'Spring':
+            initialState = spring_initialState;
+            break;
+        }
+        var state = Object.assign({}, initialState, { system_controls: initialSystemControls }); // Merge initialState and initialSystemControls
+        const store = createStore(reducers, state, middleware);
+        store.dispatch(startup());
+        ReactDOM.render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root2'));
     }
 
     onSelectType(event) {
@@ -186,10 +173,10 @@ export class PromptForDesign extends React.Component {
     }
     
     onSelectName(event) {
-//      console.log('In PromptForDesign.onSelectName event.target.value=',event.target.value);
-      this.setState({
-          name: event.target.value 
-      });
+//        console.log('In PromptForDesign.onSelectName event.target.value=',event.target.value);
+        this.setState({
+            name: event.target.value 
+        });
     }
     
     onOpen() {
@@ -198,12 +185,17 @@ export class PromptForDesign extends React.Component {
             modal: !this.state.modal
         });
         // Load the model
-        var type = this.state.type;
-        if (type === undefined) type = 'Piston-Cylinder';
-        var name = this.state.name;
-        if (name === undefined) name = 'startup';
-        this.getDesign(type,name);
+        this.getDesign(this.state.type,this.state.name);
     }
+    
+    onLoadInitialState() {
+//        console.log('In PromptForDesign.onLoadInitialState this.state.type=',this.state.type);
+        this.setState({
+            modal: !this.state.modal
+        });
+        this.loadInitialState(this.state.type);
+    }
+
     
     onCancel() {
 //        console.log('In PromptForDesign.onCancel');
@@ -239,6 +231,7 @@ export class PromptForDesign extends React.Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}
+                        {process.env.NODE_ENV !== "production" && <Button color="secondary" onClick={this.onLoadInitialState}>Load Initial State</Button>}{' '}
                         <Button color="primary" onClick={this.onOpen}>Open</Button>
                     </ModalFooter>
                 </Modal>
