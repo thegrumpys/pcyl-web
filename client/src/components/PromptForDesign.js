@@ -145,21 +145,20 @@ export class PromptForDesign extends React.Component {
 
         const middleware = composeEnhancers(applyMiddleware(/*loggerMiddleware,*/dispatcher));
 
-        var initialState;
+        var migrated_design;
         switch(type) {
         default:
         case 'Piston-Cylinder':
-            initialState = pcyl_initialState;
+            migrated_design = pcyl_migrate(Object.assign({}, pcyl_initialState, { system_controls: initialSystemControls }));
             break;
         case 'Solid':
-            initialState = solid_initialState;
+            migrated_design = solid_migrate(Object.assign({}, solid_initialState, { system_controls: initialSystemControls }));
             break;
         case 'Spring':
-            initialState = spring_initialState;
+            migrated_design= spring_migrate(Object.assign({}, spring_initialState, { system_controls: initialSystemControls }));
             break;
         }
-        var state = Object.assign({}, initialState, { system_controls: initialSystemControls }); // Merge initialState and initialSystemControls
-        const store = createStore(reducers, state, middleware);
+        const store = createStore(reducers, migrated_design, middleware);
         store.dispatch(startup());
         ReactDOM.render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root2'));
     }

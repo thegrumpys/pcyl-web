@@ -69,11 +69,26 @@ export function migrate(design) {
          delete design.state_variables;
          delete design.constants;
          migrated_design.version = '3'; // last thing... set the migrated model version
-    case '3':
+    case "3":
+        console.log('Convert from 3 to 4');
+        design.subproblems = [];
+        design.subproblems.push({
+            name: 'all',
+            number: 0,
+            mask: 1
+        });
+        design.symbol_table.forEach((element) => {
+            element.subproblems = 0xffffffff; // default is member of all subproblems
+            if (element.ioclass !== undefined) {
+                delete element.ioclass; // Toss old ioclass if it exists
+            }
+        });
+        migrated_design.version = "4"; // last thing... set the migrated model version
+    case '4':
         // Current model version
-        // console.log('Convert from 3 to 4');
+        // console.log('Convert from 4 to 5');
         // To be defined - presently do nothing
-        // migrated_design.version = '4'; // last thing... set the migrated model version
+        // migrated_design.version = '5'; // last thing... set the migrated model version
         break; // Do not copy this break
     default: // Unknown
         displayError('Unknown model version:\''+design.version+'\'. Using builtin initial state instead.');

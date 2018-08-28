@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import { connect } from 'react-redux';
 import { displayError } from '../../components/ErrorModal';
 
-class SubProblems extends React.Component {
+class ViewSubProblems extends React.Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
@@ -27,6 +27,7 @@ class SubProblems extends React.Component {
             subproblems: this.props.subproblems,
             symbol_table: this.props.symbol_table
         };
+        console.log('this.props.subproblems=',this.props.subproblems);
     }
 
     // ===========================================================================
@@ -50,7 +51,8 @@ class SubProblems extends React.Component {
             displayError('No more sub-problems are available');
             return;
         }
-        this.state.subproblems.find((entry) => {})
+        var i = this.state.subproblems.find((entry) => { return entry.name === undefined; });
+        console.log('i=',i);
         // Pop-up Create/Edit modal, set type to Create, set name to blank, and set all variables to inactive
         this.setState({
             createEditModal: !this.state.createEditModal,
@@ -245,7 +247,7 @@ class SubProblems extends React.Component {
                             <tbody>
                             { this.props.symbol_table !== undefined && this.props.symbol_table.map(
                                     (element) => {
-                                        element.input && element.equationset && !element.hidden && return (
+                                        return element.input && element.equationset && !element.hidden && (
                                             <tr key={element.name}>
                                                 <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
                                                 <td className="text-left">{element.name}</td>
@@ -262,7 +264,7 @@ class SubProblems extends React.Component {
                             <tbody>
                             { this.props.symbol_table !== undefined && this.props.symbol_table.map(
                                     (element) => {
-                                        !element.input && element.equationset && !element.hidden && return (
+                                        return !element.input && element.equationset && !element.hidden && (
                                             <tr key={element.name}>
                                                 <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
                                                 <td className="text-left">{element.name}</td>
@@ -279,7 +281,7 @@ class SubProblems extends React.Component {
                             <tbody>
                             { this.props.symbol_table !== undefined && this.props.symbol_table.map(
                                     (element) => {
-                                        element.equationset! && !element.hidden && return (
+                                        return !element.equationset && !element.hidden && (
                                             <tr key={element.name}>
                                                 <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
                                                 <td className="text-left">{element.name}</td>
@@ -323,4 +325,4 @@ const mapStateToProps = state => ({
     symbol_table: state.symbol_table
 });
 
-export default connect(mapStateToProps)(SubProblems);
+export default connect(mapStateToProps)(ViewSubProblems);

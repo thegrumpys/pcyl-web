@@ -57,9 +57,9 @@ export function migrate(design) {
         console.log('Convert from 2 to 3');
         design.subproblems = [];
         design.subproblems.push({
-                name: 'test',
-                number: 0,
-                mask: 1
+            name: 'all',
+            number: 0,
+            mask: 1
         });
         design.symbol_table.forEach((element) => {
             element.subproblems = 0xffffffff; // default is member of all subproblems
