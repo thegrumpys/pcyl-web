@@ -25,9 +25,7 @@ class SubProblems extends React.Component {
             createEditModal: false,
             deleteModal: false,
             subproblems: this.props.subproblems,
-            constants: this.props.subproblems,
-            design_parameters: this.props.design_parameters,
-            state_variables: this.props.state_variables
+            symbol_table: this.props.symbol_table
         };
     }
 
@@ -41,9 +39,7 @@ class SubProblems extends React.Component {
         this.setState({
             modal: !this.state.modal,
             subproblems: this.props.subproblems,
-            constants: this.props.subproblems,
-            design_parameters: this.props.design_parameters,
-            state_variables: this.props.state_variables
+            symbol_table: this.props.symbol_table
         });
     }
 
@@ -247,12 +243,12 @@ class SubProblems extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                            {   this.props.design_parameters !== undefined && this.props.design_parameters.map(
-                                    (design_parameter) => {
-                                        return (
-                                            <tr key={design_parameter.name}>
-                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={design_parameter.ioclass !== undefined && design_parameter.ioclass} onChange={(event) => {this.onCreateEditSelect(design_parameter.name, event)}} /></td>
-                                                <td className="text-left">{design_parameter.name}</td>
+                            { this.props.symbol_table !== undefined && this.props.symbol_table.map(
+                                    (element) => {
+                                        element.input && element.equationset && !element.hidden && return (
+                                            <tr key={element.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
+                                                <td className="text-left">{element.name}</td>
                                             </tr>
                                         );
                                     })
@@ -264,12 +260,12 @@ class SubProblems extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                            {   this.props.state_variables !== undefined && this.props.state_variables.map(
-                                    (state_variable) => {
-                                        return (
-                                            <tr key={state_variable.name}>
-                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={state_variable.ioclass !== undefined && state_variable.ioclass} onChange={(event) => {this.onCreateEditSelect(state_variable.name, event)}} /></td>
-                                                <td className="text-left">{state_variable.name}</td>
+                            { this.props.symbol_table !== undefined && this.props.symbol_table.map(
+                                    (element) => {
+                                        !element.input && element.equationset && !element.hidden && return (
+                                            <tr key={element.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
+                                                <td className="text-left">{element.name}</td>
                                             </tr>
                                         );
                                     })
@@ -281,12 +277,12 @@ class SubProblems extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                            {   this.props.constants !== undefined && this.props.constants.map(
-                                    (constant) => {
-                                        return (
-                                            <tr key={constant.name}>
-                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={constant.ioclass !== undefined && constant.ioclass} onChange={(event) => {this.onCreateEditSelect(constant.name, event)}} /></td>
-                                                <td className="text-left">{constant.name}</td>
+                            { this.props.symbol_table !== undefined && this.props.symbol_table.map(
+                                    (element) => {
+                                        element.equationset! && !element.hidden && return (
+                                            <tr key={element.name}>
+                                                <td className="text-center" width="10%"><input type="checkbox" aria-label="Checkbox for display sub-problem" checked={element.ioclass !== undefined && element.ioclass} onChange={(event) => {this.onCreateEditSelect(element.name, event)}} /></td>
+                                                <td className="text-left">{element.name}</td>
                                             </tr>
                                         );
                                     })
@@ -324,9 +320,7 @@ class SubProblems extends React.Component {
 
 const mapStateToProps = state => ({
     subproblems: state.subproblems,
-    constants: state.constants,
-    design_parameters: state.design_parameters,
-    state_variables: state.state_variables
+    symbol_table: state.symbol_table
 });
 
 export default connect(mapStateToProps)(SubProblems);
