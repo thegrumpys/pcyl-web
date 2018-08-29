@@ -22,6 +22,10 @@ import { STARTUP,
     
     CHANGE_SYSTEM_CONTROLS_VALUE, 
     CHANGE_LABELS_VALUE, 
+    
+    UPDATE_SUBPROBLEM,
+    DELETE_SUBPROBLEM,
+    
     SEARCH, 
     SEEK } from './actionTypes';
 
@@ -197,6 +201,26 @@ export function changeLabelsValue(labels) {
         type: CHANGE_LABELS_VALUE,
         payload: {
             labels
+        }
+    }
+}
+
+export function updateSubProblem(name, number, mask) {
+    return {
+        type: UPDATE_SUBPROBLEM,
+        payload: {
+            name,
+            number,
+            mask
+        }
+    }
+}
+
+export function deleteSubProblem(name) {
+    return {
+        type: DELETE_SUBPROBLEM,
+        payload: {
+            name,
         }
     }
 }

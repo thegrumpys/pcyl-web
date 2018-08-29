@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, Table, Badge, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import { connect } from 'react-redux';
+import { updateSubProblem, deleteSubProblem } from '../../store/actionCreators';
 import { displayError } from '../../components/ErrorModal';
 
 class ViewSubProblems extends React.Component {
@@ -51,19 +52,26 @@ class ViewSubProblems extends React.Component {
             displayError('No more sub-problems are available');
             return;
         }
-        var i = this.state.subproblems.find((entry) => { return entry.name === undefined; });
-        console.log('i=',i);
+        var used = new Array(32); 
+        this.state.subproblems.forEach((element) => { used[element.number] = 1; });
+        console.log('used=',used);
+        var number = used.findIndex((element) => {return element === undefined});
+        console.log('number=',number);
+        var mask = 1 << number;
+        console.log('mask=',mask);
         // Pop-up Create/Edit modal, set type to Create, set name to blank, and set all variables to inactive
         this.setState({
             createEditModal: !this.state.createEditModal,
             createEditType: "Create",
-            name: ""
+            name: '',
+            number: number,
+            mask: mask
         });
     }
 
     onEdit(name, event) {
         console.log('In SubProblems.onEdit name=',name,' event.target.value=',event.target.value);
-        // Pop-up Create/Edit modal, set type to Edit, set name to entry's name, and set all variables to inactive
+        // Pop-up Create/Edit modal, set type to Edit, set name to element's name, and set all variables to inactive
         this.setState({
             createEditModal: !this.state.createEditModal,
             createEditType: "Edit",
@@ -135,7 +143,7 @@ class ViewSubProblems extends React.Component {
 
     onCreateEditDeselectAll(event) {
         console.log('In SubProblems.onCreateEditDeselectAll');
-        // Update local subproblem variable's masks to active
+        // Update local subproblem variable's masks to inactive
     }
 
     onCreateEditCancel() {
@@ -148,10 +156,15 @@ class ViewSubProblems extends React.Component {
 
     onCreateEditSave() {
         console.log('In SubProblems.onCreateEditSave');
-        // Hide Create/Edit modal, validate input (name not blank) and if valid update subproblem by name
+        // Validate input (name not blank). If not valie, return. If valid hide Create/Edit modal and update subproblem by name
+        if (this.state.name === '') {
+            displayError('Sub-problem name is blank. Enter sub-problem name');
+            return;
+        }
         this.setState({
             createEditModal: !this.state.createEditModal
         });
+        this.props.updateSubProblem(this.state.name, this.state.number, this.state.mask);
     }
 
     // ===========================================================================
@@ -172,6 +185,7 @@ class ViewSubProblems extends React.Component {
         this.setState({
             deleteModal: !this.state.deleteModal
         });
+        this.props.deleteSubProblem(this.state.name);
     }
 
     // ===========================================================================
@@ -325,4 +339,9 @@ const mapStateToProps = state => ({
     symbol_table: state.symbol_table
 });
 
-export default connect(mapStateToProps)(ViewSubProblems);
+const mapDispatchToProps = {
+    updateSubProblem: updateSubProblem,
+    deleteSubProblem: deleteSubProblem
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewSubProblems);

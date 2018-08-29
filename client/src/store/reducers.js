@@ -23,14 +23,18 @@ import { STARTUP,
     CHANGE_SYSTEM_CONTROLS_VALUE, 
     CHANGE_LABELS_VALUE, 
     
+    UPDATE_SUBPROBLEM,
+    DELETE_SUBPROBLEM,
+    
     MIN } from './actionTypes';
 import { sclden } from './middleware/sclden';
 
 export function reducers(state, action) {
     var i;
     var value;
+    var index;
 //    console.log('In reducers');
-//    console.log(action);
+    console.log(action);
     switch (action.type) {
     case STARTUP:
         return state;
@@ -47,7 +51,7 @@ export function reducers(state, action) {
         return Object.assign({}, state, {
             symbol_table: state.symbol_table.map((element) => {
                 if (element.name === action.payload.name) {
-//                    console.log('CHANGE_SYMBOL_VALUE element=',element.name,' old value=',element.value,' new value=',action.payload.value);
+//                    console.log('CHANGE_SYMBOL_VALUE name=',element.name,' old value=',element.value,' new value=',action.payload.value);
                     return Object.assign({}, element, {
                         value: action.payload.value
                     });
@@ -165,7 +169,7 @@ export function reducers(state, action) {
                 if (element.input) {
                     value = action.payload.values[i++]
                     if (value !== undefined) {
-//                        console.log('CHANGE_INPUT_SYMBOL_VALUES i=',i-1,' element=',element.name,' old value=',element.value,' new value=',value);
+//                        console.log('CHANGE_INPUT_SYMBOL_VALUES i=',i-1,' name=',element.name,' old value=',element.value,' new value=',value);
                         return Object.assign({}, element, {
                             value: value
                         });
@@ -211,7 +215,7 @@ export function reducers(state, action) {
                 if (!element.input) {
                     value = action.payload.values[i++]
                     if (value !== undefined) {
-//                        console.log('CHANGE_OUTPUT_SYMBOL_VALUES i=',i-1,' element=',element.name,' old value=',element.value,' new value=',value);
+//                        console.log('CHANGE_OUTPUT_SYMBOL_VALUES i=',i-1,' name=',element.name,' old value=',element.value,' new value=',value);
                         return Object.assign({}, element, {
                             value: value
                         });
@@ -266,7 +270,42 @@ export function reducers(state, action) {
             ...state,
             labels: action.payload.labels
         }
-    default:
+        
+// SUBPROBLEMS
+             
+    case UPDATE_SUBPROBLEM:
+        console.log('UPDATE_SUBPROBLEM name=',action.payload.name,' number=',action.payload.number,' mask=',action.payload.mask);
+        index = state.subproblems.findIndex((element) => {return element.name === action.payload.name});
+        console.log('UPDATE_SUBPROBLEM index=',index);
+        if (index === -1) { // Not found, then put it at the end
+            index = state.subproblems.length;
+        }
+        var result = {
+            ...state,
+            subproblems: [
+                ...state.subproblems.slice(0, index),
+                {
+                    name: action.payload.name,
+                    number: action.payload.number,
+                    mask: action.payload.mask
+                },
+                ...state.subproblems.slice(index + 1)
+            ]
+        }
+        console.log('UPDATE_SUBPROBLEM result=',result);
+        return result;
+    case DELETE_SUBPROBLEM:
+        index = state.subproblems.findIndex((element) => {return element.name === action.payload.name});
+        console.log('DELETE_SUBPROBLEM name=',action.payload.name,' index=',index);
+        return {
+            ...state,
+            subproblems: [
+                ...state.subproblems.slice(0, index),
+                ...state.subproblems.slice(index + 1)
+            ]
+        }
+
+default:
         return state;
     }
 }
